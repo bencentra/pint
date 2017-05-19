@@ -1,27 +1,51 @@
 #! /usr/bin/env node
-const xml2json = require('xml2json');
+const parser = require('xml2json');
 const fs = require('fs');
 const path = require('path');
 
-const litersToGallons = l => l * 0.264172;
-const kilogramsToPounds = kg => kg * 2.20462;
+const litersToGallons = l => Number(l) * 0.264172;
+const kilogramsToPounds = kg => Number(kg) * 2.20462;
 
 const filename = process.argv[2];
+if (!filename) {
+  console.error('file name required');
+  process.exit(1);
+}
 const batchSize = Number(process.argv[3]);
+if (!batchSize) {
+  console.error('batch size required');
+  process.exit(1);
+}
 
 const xml = fs.readFileSync(filename, 'utf8');
-console.log(xml);
-const json = xml2json.toJson(xml);
-console.log(json);
+const json = JSON.parse(parser.toJson(xml));
 
 const recipe = json['RECIPES']['RECIPE'];
+const convertedRecipe = {
+  batchSize,
+  ingredients: {}
+};
+
 const sizeInGallons = litersToGallons(recipe['BATCH_SIZE']);
-console.log(sizeInGallons);
+const scaleFactor = sizeInGallons / batchSize;
+console.log(sizeInGallons, batchSize, scaleFactor);
 
 const fermentables = recipe['FERMENTABLES']['FERMENTABLE'];
 const convertedFermentables = fermentables.map((f) => {
   return {
-    amount: kilogramsToPounds(Number(f['AMOUNT']))
+    name: f['NAME'],
+    amount: kilogramsToPounds(f['AMOUNT']) / scaleFactor
   };
 });
-console.log(convertedFermentables);
+convertedRecipe.ingredients.fermentables = convertedFermentables
+
+const hops = recipe['HOPS']['HOP'];
+const convertedHops = hops.map((h) => {
+  return {
+    name: h['NAME'],
+    amount: kilogramsToPounds(h['AMOUNT']) / scaleFactor
+  };
+});
+convertedRecipe.ingredients.hops = convertedHops
+
+console.log(JSON.stringify(convertedRecipe));
