@@ -1,0 +1,166 @@
+{
+  "RECIPES": {
+    "RECIPE": {
+      "NAME": "Wheat Cheeks",
+      "STYLE": {
+        "STYLE_GUIDE": "BJCP",
+        "VERSION": "1",
+        "NAME": "Weizen/Weissbier",
+        "STYLE_LETTER": "A",
+        "CATEGORY_NUMBER": "15",
+        "TYPE": "Wheat",
+        "OG_MIN": "1.044",
+        "OG_MAX": "1.052",
+        "FG_MIN": "1.01",
+        "FG_MAX": "1.014",
+        "IBU_MIN": "8.0",
+        "IBU_MAX": "15.0",
+        "COLOR_MIN": "2.0",
+        "COLOR_MAX": "8.0",
+        "ABV_MIN": "4.3",
+        "ABV_MAX": "5.6"
+      },
+      "FERMENTABLES": {
+        "FERMENTABLE": [
+          {
+            "NAME": "Wheat Malt (DE)",
+            "ORIGIN": {},
+            "TYPE": "Adjunct",
+            "YIELD": "79.89635068019865",
+            "AMOUNT": "2.4947580350000003",
+            "DISPLAY_AMOUNT": "5.5 lb",
+            "POTENTIAL": "1.037",
+            "COLOR": "2",
+            "DISPLAY_COLOR": "2 SRM",
+            "ADD_AFTER_BOIL": {},
+            "COARSE_FINE_DIFF": {},
+            "MOISTURE": {},
+            "DIASTATIC_POWER": {},
+            "PROTEIN": {},
+            "MAX_IN_BATCH": {},
+            "RECOMMEND_MASH": {},
+            "IBU_GAL_PER_LB": {},
+            "NOTES": {}
+          },
+          {
+            "NAME": "Bohemian Pilsner (DE)",
+            "ORIGIN": {},
+            "TYPE": "Base Malt",
+            "YIELD": "82.05571150939322",
+            "AMOUNT": "1.81436948",
+            "DISPLAY_AMOUNT": "4.0 lb",
+            "POTENTIAL": "1.038",
+            "COLOR": "1",
+            "DISPLAY_COLOR": "1 SRM",
+            "ADD_AFTER_BOIL": {},
+            "COARSE_FINE_DIFF": {},
+            "MOISTURE": {},
+            "DIASTATIC_POWER": {},
+            "PROTEIN": {},
+            "MAX_IN_BATCH": {},
+            "RECOMMEND_MASH": {},
+            "IBU_GAL_PER_LB": {},
+            "NOTES": {}
+          },
+          {
+            "NAME": "Rice Hulls",
+            "ORIGIN": {},
+            "TYPE": "Adjunct",
+            "YIELD": "0.0",
+            "AMOUNT": "0.45359237",
+            "DISPLAY_AMOUNT": "1.0 lb",
+            "POTENTIAL": "1.0",
+            "COLOR": "0",
+            "DISPLAY_COLOR": "0 SRM",
+            "ADD_AFTER_BOIL": {},
+            "COARSE_FINE_DIFF": {},
+            "MOISTURE": {},
+            "DIASTATIC_POWER": {},
+            "PROTEIN": {},
+            "MAX_IN_BATCH": {},
+            "RECOMMEND_MASH": {},
+            "IBU_GAL_PER_LB": {},
+            "NOTES": {}
+          },
+          {
+            "NAME": "Munich Light (CA)",
+            "ORIGIN": {},
+            "TYPE": "Kilned Malt",
+            "YIELD": "73.41826819261497",
+            "AMOUNT": "0.45359237",
+            "DISPLAY_AMOUNT": "1.0 lb",
+            "POTENTIAL": "1.034",
+            "COLOR": "10",
+            "DISPLAY_COLOR": "10 SRM",
+            "ADD_AFTER_BOIL": {},
+            "COARSE_FINE_DIFF": {},
+            "MOISTURE": {},
+            "DIASTATIC_POWER": {},
+            "PROTEIN": {},
+            "MAX_IN_BATCH": {},
+            "RECOMMEND_MASH": {},
+            "IBU_GAL_PER_LB": {},
+            "NOTES": {}
+          }
+        ]
+      },
+      "HOPS": {
+        "HOP": [
+          {
+            "NAME": "Hallertauer Mittelfrüh (DE)",
+            "ORIGIN": "Germany",
+            "ALPHA": "4.25",
+            "BETA": {},
+            "AMOUNT": "0.01417475",
+            "DISPLAY_AMOUNT": "0.5 oz",
+            "USE": "First Wort",
+            "FORM": "Pellet",
+            "TIME": "20",
+            "DISPLAY_TIME": "20.0 min",
+            "NOTES": {}
+          },
+          {
+            "NAME": "Hallertauer Mittelfrüh (DE)",
+            "ORIGIN": "Germany",
+            "ALPHA": "4.25",
+            "BETA": {},
+            "AMOUNT": "0.01417475",
+            "DISPLAY_AMOUNT": "0.5 oz",
+            "USE": "Boil",
+            "FORM": "Pellet",
+            "TIME": "50",
+            "DISPLAY_TIME": "50.0 min",
+            "NOTES": {}
+          }
+        ]
+      },
+      "YEASTS": {
+        "YEAST": {
+          "LABORATORY": "White Labs",
+          "NAME": "Hefeweizen Ale Yeast",
+          "TYPE": "Ale",
+          "FORM": "Liquid",
+          "ATTENUATION": "74.0"
+        }
+      },
+      "MISCS": {
+        "MISC": {
+          "NAME": "Peach Puree",
+          "USE": "Secondary",
+          "TIME": "2.0",
+          "AMOUNT": "2.0",
+          "AMOUNT_IS_WEIGHT": "false",
+          "NOTES": {},
+          "DISPLAY_AMOUNT": "2.0",
+          "DISPLAY_TIME": "2.0"
+        }
+      },
+      "TYPE": "All Grain",
+      "BREWER": "Jay",
+      "BATCH_SIZE": "20.81976479",
+      "BOIL_SIZE": "22.71247068",
+      "BOIL_TIME": "60",
+      "EFFICIENCY": "70.0"
+    }
+  }
+}
