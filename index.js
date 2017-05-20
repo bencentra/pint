@@ -1,7 +1,14 @@
 #! /usr/bin/env node
+// https://www.brewtoad.com/recipes/andys-wheat-peach
+
 const parser = require('xml2json');
 const fs = require('fs');
 const path = require('path');
+
+const units = {
+  POUNDS: 'lb',
+  OUNCES: 'oz'
+};
 
 const litersToGallons = l => Number(l) * 0.264172;
 const kilogramsToPounds = kg => Number(kg) * 2.20462;
@@ -20,32 +27,56 @@ if (!batchSize) {
 const xml = fs.readFileSync(filename, 'utf8');
 const json = JSON.parse(parser.toJson(xml));
 
-const recipe = json['RECIPES']['RECIPE'];
+const tmp = json['RECIPES']['RECIPE'];
+const recipe = {
+  size: litersToGallons(tmp['BATCH_SIZE']),
+  style: tmp['STYLE'],
+  ingredients: {
+    fermentables: tmp['FERMENTABLES']['FERMENTABLE'],
+    hops: tmp['HOPS']['HOP'],
+    yeast: tmp['YEASTS']['YEAST'],
+    misc: tmp['MISCS']['MISC']
+  }
+};
+const scaleFactor = recipe.size / batchSize;
+const scale = (value, factor = scaleFactor) => value / factor;
 const convertedRecipe = {
-  batchSize,
-  ingredients: {}
+  size: batchSize,
+  style: {},
+  ingredients: {
+    fermentables: [],
+    hops: [],
+    yeast: [],
+    misc: []
+  }
 };
 
-const sizeInGallons = litersToGallons(recipe['BATCH_SIZE']);
-const scaleFactor = sizeInGallons / batchSize;
-console.log(sizeInGallons, batchSize, scaleFactor);
+const calculateAmount = (ingredient) => {
+  const notKg = ingredient['AMOUNT_IS_WEIGHT'] === 'false';
+  let amount, unit = units.POUNDS;
+  if (notKg) {
+    amount = scale(Number(ingredient['AMOUNT']));
+  } else {
+    amount = scale(kilogramsToPounds(ingredient['AMOUNT']));
+  }
+  if (amount < 1) {
+    amount = amount * 16;
+    unit = units.OUNCES;
+  }
+  return { amount, unit };
+};
 
-const fermentables = recipe['FERMENTABLES']['FERMENTABLE'];
-const convertedFermentables = fermentables.map((f) => {
-  return {
-    name: f['NAME'],
-    amount: kilogramsToPounds(f['AMOUNT']) / scaleFactor
-  };
+Object.keys(recipe.ingredients).forEach((type) => {
+  // Dunno why recipe.ingredients[type].forEach isn't working...
+  Array.prototype.forEach.call(recipe.ingredients[type], (ingredient) => {
+    const { amount, unit } = calculateAmount(ingredient);
+    const convertedIngredient = {
+      name: ingredient['NAME'],
+      amount,
+      unit
+    };
+    convertedRecipe.ingredients[type].push(convertedIngredient);
+  });
 });
-convertedRecipe.ingredients.fermentables = convertedFermentables
-
-const hops = recipe['HOPS']['HOP'];
-const convertedHops = hops.map((h) => {
-  return {
-    name: h['NAME'],
-    amount: kilogramsToPounds(h['AMOUNT']) / scaleFactor
-  };
-});
-convertedRecipe.ingredients.hops = convertedHops
 
 console.log(JSON.stringify(convertedRecipe));
