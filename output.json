@@ -1,0 +1,49 @@
+{
+  "size": 1.1,
+  "unit": "gal",
+  "style": {},
+  "ingredients": {
+    "fermentables": [
+      {
+        "name": "2-Row (US)",
+        "amount": 1.143998867443481,
+        "unit": "lb"
+      },
+      {
+        "name": "White Wheat  (US)",
+        "amount": 12.319987803237487,
+        "unit": "oz"
+      }
+    ],
+    "hops": [
+      {
+        "name": "Cascade (NZ)",
+        "amount": 0.13199976164673938,
+        "unit": "oz"
+      },
+      {
+        "name": "Cascade (NZ)",
+        "amount": 0.13199976164673938,
+        "unit": "oz"
+      },
+      {
+        "name": "Williamette (US)",
+        "amount": 0.26399952329347876,
+        "unit": "oz"
+      }
+    ],
+    "yeast": [],
+    "misc": [
+      {
+        "name": "Apricot",
+        "amount": 15.136003015906722,
+        "unit": "oz"
+      },
+      {
+        "name": "Peaches (Fresh)",
+        "amount": 15.136003015906722,
+        "unit": "oz"
+      }
+    ]
+  }
+}

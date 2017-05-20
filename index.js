@@ -7,7 +7,8 @@ const path = require('path');
 
 const units = {
   POUNDS: 'lb',
-  OUNCES: 'oz'
+  OUNCES: 'oz',
+  GALLONS: 'gal'
 };
 
 const litersToGallons = l => Number(l) * 0.264172;
@@ -30,6 +31,7 @@ const json = JSON.parse(parser.toJson(xml));
 const tmp = json['RECIPES']['RECIPE'];
 const recipe = {
   size: litersToGallons(tmp['BATCH_SIZE']),
+  unit: units.GALLONS,
   style: tmp['STYLE'],
   ingredients: {
     fermentables: tmp['FERMENTABLES']['FERMENTABLE'],
@@ -42,6 +44,7 @@ const scaleFactor = recipe.size / batchSize;
 const scale = (value, factor = scaleFactor) => value / factor;
 const convertedRecipe = {
   size: batchSize,
+  unit: units.GALLONS,
   style: {},
   ingredients: {
     fermentables: [],
