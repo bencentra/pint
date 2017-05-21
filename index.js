@@ -1,4 +1,3 @@
-// https://www.brewtoad.com/recipes/andys-wheat-peach
 const parser = require('xml2json');
 const fs = require('fs');
 const path = require('path');

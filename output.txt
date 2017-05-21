@@ -1,0 +1,37 @@
+ANDY'S WHEAT PEACH
+
+key    value
+-----  ------------------
+name   Andy's Wheat Peach
+size   1.1
+unit   gal
+style  Fruit Beer
+
+FERMENTABLES
+
+name               amount              unit
+-----------------  ------------------  ----
+2-Row (US)         1.143998867443481   lb
+White Wheat  (US)  12.319987803237487  oz
+
+HOPS
+
+name              amount               unit
+----------------  -------------------  ----
+Cascade (NZ)      0.13199976164673938  oz
+Cascade (NZ)      0.13199976164673938  oz
+Williamette (US)  0.26399952329347876  oz
+
+YEAST
+
+key    value
+-----  ------------------------
+name   American Ale Yeast Blend
+brand  White Labs
+
+MISC
+
+name             amount              unit
+---------------  ------------------  ----
+Apricot          15.136003015906722  oz
+Peaches (Fresh)  15.136003015906722  oz
