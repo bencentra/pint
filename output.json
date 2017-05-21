@@ -1,7 +1,8 @@
 {
+  "name": "Andy's Wheat Peach",
   "size": 1.1,
   "unit": "gal",
-  "style": {},
+  "style": "Fruit Beer",
   "ingredients": {
     "fermentables": [
       {
@@ -32,7 +33,10 @@
         "unit": "oz"
       }
     ],
-    "yeast": [],
+    "yeast": {
+      "name": "American Ale Yeast Blend",
+      "brand": "White Labs"
+    },
     "misc": [
       {
         "name": "Apricot",
