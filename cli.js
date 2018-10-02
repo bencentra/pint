@@ -1,6 +1,8 @@
 #! /usr/bin/env node
-require('console.table');
+const debug = require('debug');
 const pint = require('./index.js');
+
+const log = debug('pint-cli');
 
 const fileName = process.argv[2];
 if (!fileName) {
