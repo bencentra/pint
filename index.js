@@ -2,9 +2,9 @@ const parser = require('xml2json');
 const fs = require('fs');
 const path = require('path');
 const debug = require('debug');
+const utils = require('./utils');
 
 const log = debug('pint');
-const logJSON = json => JSON.stringify(json, null, 2);
 
 const units = {
   POUNDS: 'lb',
@@ -20,7 +20,7 @@ module.exports = (fileName, batchSize) => {
   const xml = fs.readFileSync(fileName, 'utf8');
   const json = JSON.parse(parser.toJson(xml));
   log('JSON:');
-  log(logJSON(json));
+  log(utils.prettyPrintJSON(json));
 
   const tmp = json['RECIPES']['RECIPE'];
   const recipe = {
@@ -36,7 +36,7 @@ module.exports = (fileName, batchSize) => {
     }
   };
   log('Recipe:');
-  log(logJSON(recipe));
+  log(utils.prettyPrintJSON(recipe));
   const scaleFactor = recipe.size / batchSize;
   const scale = (value, factor = scaleFactor) => value / factor;
   const convertedRecipe = {
@@ -88,7 +88,7 @@ module.exports = (fileName, batchSize) => {
   };
 
   log('Converted Recipe:');
-  log(logJSON(convertedRecipe));
+  log(utils.prettyPrintJSON(convertedRecipe));
 
   return convertedRecipe
 };
