@@ -22,8 +22,13 @@ const convertedRecipe = pint(fileName, batchSize);
 const convertedIngredients = convertedRecipe.ingredients;
 
 const outputTable = (recipe) => {
+  // Print a fancy header
+  const len = recipe.name.length;
+  console.log('#'.repeat(len + 6));
+  console.log(`## ${recipe.name.toUpperCase()} ##`);
+  console.log('#'.repeat(len + 6));
+  // Print the recipe
   delete recipe.ingredients;
-  console.log(`${recipe.name.toUpperCase()}\n`);
   console.table(recipe);
   Object.keys(convertedIngredients).forEach((type) => {
     console.log(`${type.toUpperCase()}\n`);

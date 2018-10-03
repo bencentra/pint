@@ -4,7 +4,7 @@ Convert [BeerXML](http://www.beerxml.com/) recipes to different batch sizes. Con
 
 ## Usage
 
-```bash
+```
 $ pint -h
 Usage: pint [options]
 
@@ -19,9 +19,11 @@ Options:
 
 ## Example
 
-```bash
+```
 $ pint -s 1.1 -f lemon-saison-1.xml
-LEMON SAISON
+##################
+## LEMON SAISON ##
+##################
 
 ┌─────────┬────────────────┐
 │ (index) │     Values     │
