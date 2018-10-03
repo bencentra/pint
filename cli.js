@@ -29,10 +29,12 @@ const outputTable = (recipe) => {
   console.log('#'.repeat(len + 6));
   // Print the recipe
   delete recipe.ingredients;
-  console.table(recipe);
+  console.table([recipe]);
   Object.keys(convertedIngredients).forEach((type) => {
-    console.log(`${type.toUpperCase()}\n`);
-    console.table(convertedIngredients[type]);
+    if (convertedIngredients[type]) {
+      console.log(`${type.toUpperCase()}`);
+      console.table(convertedIngredients[type]);
+    }
   });
 };
 

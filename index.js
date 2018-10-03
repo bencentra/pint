@@ -53,39 +53,50 @@ module.exports = (fileName, batchSize) => {
   };
 
   const calculateAmount = (ingredient) => {
-    const notKg = ingredient['AMOUNT_IS_WEIGHT'] === 'false';
-    let amount, unit = units.POUNDS;
-    if (notKg) {
-      amount = scale(Number(ingredient['AMOUNT']));
+    log('calculateAmount', ingredient);
+    const amountIsNotWeight = ingredient['AMOUNT_IS_WEIGHT'] === 'false';
+    let amount = scale(parseFloat(ingredient['AMOUNT']));
+    let unit;
+    if (!amountIsNotWeight) {
+      unit = units.POUNDS;
+      if (amount < 1) {
+        amount = amount * 16;
+        unit = units.OUNCES;
+      }
     } else {
-      amount = scale(kilogramsToPounds(ingredient['AMOUNT']));
-    }
-    if (amount < 1) {
-      amount = amount * 16;
-      unit = units.OUNCES;
+      unit = 'ea.';
     }
     return { amount, unit };
   };
 
   const processIngredient = (type) => {
-    return Array.prototype.map.call(recipe.ingredients[type], (ingredient) => {
-      const { amount, unit } = calculateAmount(ingredient);
-      const convertedIngredient = {
-        name: ingredient['NAME'],
-        amount,
-        unit
-      };
-      return convertedIngredient;
-    });
+    log('processIngredient', type);
+    const ingredients = recipe.ingredients[type] || null;
+    if (ingredients) {
+      return Array.prototype.map.call(ingredients, (ingredient) => {
+        const { amount, unit } = calculateAmount(ingredient);
+        const convertedIngredient = {
+          name: ingredient['NAME'],
+          amount,
+          unit,
+        };
+        if (ingredient['DISPLAY_TIME']) {
+          convertedIngredient.time = ingredient['DISPLAY_TIME'];
+        }
+        return convertedIngredient;
+      });
+    } else {
+      return ingredients;
+    }
   };
 
   convertedRecipe.ingredients.fermentables = processIngredient('fermentables');
   convertedRecipe.ingredients.hops = processIngredient('hops');
   convertedRecipe.ingredients.misc = processIngredient('misc');
-  convertedRecipe.ingredients.yeast = {
+  convertedRecipe.ingredients.yeast = [{
     name: recipe.ingredients.yeast['NAME'],
-    brand: recipe.ingredients.yeast['LABORATORY']
-  };
+    brand: recipe.ingredients.yeast['LABORATORY'],
+  }];
 
   log('Converted Recipe:');
   log(utils.prettyPrintJSON(convertedRecipe));
