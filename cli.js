@@ -1,28 +1,34 @@
 #! /usr/bin/env node
-require('console.table');
+const program = require('commander');
+const debug = require('debug');
+const pkg = require('./package.json');
 const pint = require('./index.js');
+const utils = require('./utils');
 
-const fileName = process.argv[2];
-if (!fileName) {
-  console.error('file name required');
-  process.exit(1);
-}
-const batchSize = Number(process.argv[3]);
-if (!batchSize) {
-  console.error('batch size required');
-  process.exit(1);
-}
-let format = process.argv[4] || '';
-if (['table', 'json'].indexOf(format) === -1) {
-  format = 'table';
-}
+const log = debug('pint-cli');
+
+program
+  .version(pkg.version)
+  .option('-s --size <size>', 'Batch size', parseFloat)
+  .option('-f --file <file>', 'Path to input BeerXML file')
+  .option('--json', 'Output as JSON instead of text')
+  .parse(process.argv);
+
+const batchSize = program.size;
+const fileName = program.file;
+const format = (program.json) ? 'json' : 'table';
 
 const convertedRecipe = pint(fileName, batchSize);
 const convertedIngredients = convertedRecipe.ingredients;
 
 const outputTable = (recipe) => {
+  // Print a fancy header
+  const len = recipe.name.length;
+  console.log('#'.repeat(len + 6));
+  console.log(`## ${recipe.name.toUpperCase()} ##`);
+  console.log('#'.repeat(len + 6));
+  // Print the recipe
   delete recipe.ingredients;
-  console.log(`${recipe.name.toUpperCase()}\n`);
   console.table(recipe);
   Object.keys(convertedIngredients).forEach((type) => {
     console.log(`${type.toUpperCase()}\n`);
@@ -30,7 +36,7 @@ const outputTable = (recipe) => {
   });
 };
 
-const outputJson = (recipe) => console.log(JSON.stringify(recipe));
+const outputJson = (recipe) => console.log(utils.prettyPrintJSON(recipe));
 
 if (format === 'table') {
   outputTable(convertedRecipe);
