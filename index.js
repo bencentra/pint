@@ -6,28 +6,79 @@ const utils = require('./utils');
 
 const log = debug('pint');
 
+// Constants for units
 const units = {
   POUNDS: 'lb',
   OUNCES: 'oz',
   GALLONS: 'gal'
 };
 
+// Round a number to a specified decimal length
+const round = (num, places = 2) => Number(num).toFixed(places);
+
+// In BeerXML files, an AMOUT is metric but DISPLAY_AMOUNT may be anything
 const litersToGallons = l => Number(l) * 0.264172;
 const kilogramsToPounds = kg => Number(kg) * 2.20462;
 
-module.exports = (fileName, batchSize) => {
+// Calculate the scaled amount of an ingredient
+const calculateAmount = (ingredient, scaleFn) => {
+  log('calculateAmount', ingredient);
+  const amountIsWeight = ingredient['AMOUNT_IS_WEIGHT'] !== 'false';
+  let amount, unit;
+  if (amountIsWeight) {
+    amount = scaleFn(kilogramsToPounds(ingredient['AMOUNT']));
+    unit = units.POUNDS;
+    if (amount < 1) {
+      amount = amount * 16;
+      unit = units.OUNCES;
+    }
+  } else {
+    amount = ingredient['AMOUNT'];
+    unit = 'ea.';
+  }
+  return { amount: round(amount), unit };
+};
 
+// Scale and format ingredients
+const processIngredients = (ingredients = [], scaleFn) => {
+  log('processIngredients', ingredients);
+  return Array.prototype.map.call(ingredients, (ingredient) => {
+    const { amount, unit } = calculateAmount(ingredient, scaleFn);
+    const convertedIngredient = {
+      name: ingredient['NAME'],
+      amount,
+      unit,
+    };
+    if (ingredient['DISPLAY_TIME']) {
+      convertedIngredient.time = ingredient['DISPLAY_TIME'];
+    }
+    return convertedIngredient;
+  });
+};
+
+/**
+ * Convert a BeerXML file to the specified batch size
+ * @param {String} fileName the name of the BeerXML file to parse
+ * @param {Number} batchSize the size of the batch in gallons
+ * @return {Object} the converted recipe
+ */
+module.exports = (fileName, batchSizeIn) => {
+  // Parse the XML file into JSON
   const xml = fs.readFileSync(fileName, 'utf8');
   const json = JSON.parse(parser.toJson(xml));
   log('JSON:');
   log(utils.prettyPrintJSON(json));
 
+  // Format a simplified recipe object
   const tmp = json['RECIPES']['RECIPE'];
+  const batchSize = batchSizeIn || round(litersToGallons(tmp['BATCH_SIZE']), 1);
   const recipe = {
-    name: tmp['NAME'],
-    size: litersToGallons(tmp['BATCH_SIZE']),
-    unit: units.GALLONS,
-    style: tmp['STYLE']['NAME'],
+    data: {
+      name: tmp['NAME'],
+      size: litersToGallons(tmp['BATCH_SIZE']),
+      unit: units.GALLONS,
+      style: tmp['STYLE']['NAME'],
+    },
     ingredients: {
       fermentables: tmp['FERMENTABLES']['FERMENTABLE'],
       hops: tmp['HOPS']['HOP'],
@@ -37,58 +88,30 @@ module.exports = (fileName, batchSize) => {
   };
   log('Recipe:');
   log(utils.prettyPrintJSON(recipe));
-  const scaleFactor = recipe.size / batchSize;
+
+  // Scale the recipe to the specified amount
+  const scaleFactor = recipe.data.size / batchSize;
   const scale = (value, factor = scaleFactor) => value / factor;
+  const process = (type) => processIngredients(recipe.ingredients[type], scale);
   const convertedRecipe = {
-    name: recipe.name,
-    size: batchSize,
-    unit: units.GALLONS,
-    style: recipe.style,
-    ingredients: {
-      fermentables: [],
-      hops: [],
-      yeast: {},
-      misc: []
-    }
+    data: {
+      name: recipe.data.name,
+      size: batchSize,
+      unit: units.GALLONS,
+      style: recipe.data.style,
+    },
+    ingredients: {}
   };
-
-  const calculateAmount = (ingredient) => {
-    const notKg = ingredient['AMOUNT_IS_WEIGHT'] === 'false';
-    let amount, unit = units.POUNDS;
-    if (notKg) {
-      amount = scale(Number(ingredient['AMOUNT']));
-    } else {
-      amount = scale(kilogramsToPounds(ingredient['AMOUNT']));
-    }
-    if (amount < 1) {
-      amount = amount * 16;
-      unit = units.OUNCES;
-    }
-    return { amount, unit };
-  };
-
-  const processIngredient = (type) => {
-    return Array.prototype.map.call(recipe.ingredients[type], (ingredient) => {
-      const { amount, unit } = calculateAmount(ingredient);
-      const convertedIngredient = {
-        name: ingredient['NAME'],
-        amount,
-        unit
-      };
-      return convertedIngredient;
-    });
-  };
-
-  convertedRecipe.ingredients.fermentables = processIngredient('fermentables');
-  convertedRecipe.ingredients.hops = processIngredient('hops');
-  convertedRecipe.ingredients.misc = processIngredient('misc');
-  convertedRecipe.ingredients.yeast = {
+  convertedRecipe.ingredients.fermentables = process('fermentables', scale);
+  convertedRecipe.ingredients.hops = process('hops', scale);
+  convertedRecipe.ingredients.misc = process('misc', scale);
+  convertedRecipe.ingredients.yeast = [{
     name: recipe.ingredients.yeast['NAME'],
-    brand: recipe.ingredients.yeast['LABORATORY']
-  };
-
+    brand: recipe.ingredients.yeast['LABORATORY'],
+  }];
   log('Converted Recipe:');
   log(utils.prettyPrintJSON(convertedRecipe));
 
+  // Return the converted recipe
   return convertedRecipe
 };

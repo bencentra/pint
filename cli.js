@@ -7,39 +7,54 @@ const utils = require('./utils');
 
 const log = debug('pint-cli');
 
+// Parse CLI args
+let file;
 program
   .version(pkg.version)
+  .arguments('<file>')
+  .action(function(fileIn) {
+    file = fileIn;
+  })
   .option('-s --size <size>', 'Batch size', parseFloat)
-  .option('-f --file <file>', 'Path to input BeerXML file')
   .option('--json', 'Output as JSON instead of text')
   .parse(process.argv);
 
+// Ensure the file is defined
+if (!file) {
+  program.help();
+}
+
+// Determine running parameters
 const batchSize = program.size;
-const fileName = program.file;
-const format = (program.json) ? 'json' : 'table';
+const format = (program.json) ? 'json' : 'text';
 
-const convertedRecipe = pint(fileName, batchSize);
-const convertedIngredients = convertedRecipe.ingredients;
+// Convert the recipe
+const convertedRecipe = pint(file, batchSize);
 
-const outputTable = (recipe) => {
+// Output the recipe as text
+const outputText = (recipe) => {
+  const { data, ingredients } = recipe;
   // Print a fancy header
-  const len = recipe.name.length;
+  const len = data.name.length;
   console.log('#'.repeat(len + 6));
-  console.log(`## ${recipe.name.toUpperCase()} ##`);
+  console.log(`## ${data.name.toUpperCase()} ##`);
   console.log('#'.repeat(len + 6));
   // Print the recipe
-  delete recipe.ingredients;
-  console.table(recipe);
-  Object.keys(convertedIngredients).forEach((type) => {
-    console.log(`${type.toUpperCase()}\n`);
-    console.table(convertedIngredients[type]);
+  console.table([data]);
+  Object.keys(ingredients).forEach((type) => {
+    if (ingredients[type]) {
+      console.log(`${type.toUpperCase()}`);
+      console.table(ingredients[type]);
+    }
   });
 };
 
+// Output the recipe as JSON
 const outputJson = (recipe) => console.log(utils.prettyPrintJSON(recipe));
 
-if (format === 'table') {
-  outputTable(convertedRecipe);
+// Output the data
+if (format === 'text') {
+  outputText(convertedRecipe);
 } else if (format === 'json') {
   outputJson(convertedRecipe);
 }
