@@ -1,6 +1,4 @@
 const parser = require('xml2json');
-const fs = require('fs');
-const path = require('path');
 const debug = require('debug');
 const utils = require('./utils');
 
@@ -33,15 +31,23 @@ const calculateAmount = (ingredient, scaleFn) => {
       unit = units.OUNCES;
     }
   } else {
-    amount = ingredient['AMOUNT'];
+    amount = scaleFn(ingredient['AMOUNT']); // Example - is it safe to scale lemon peel like a grain?
     unit = 'ea.';
   }
+  // Special case for single items with amount 0 (e.g. Whirlfloc Tablet)
+  if (parseFloat(amount) === 0) {
+    amount = 1;
+  }
+  log(amount, unit);
   return { amount: round(amount), unit };
 };
 
 // Scale and format ingredients
 const processIngredients = (ingredients = [], scaleFn) => {
   log('processIngredients', ingredients);
+  if (!Array.isArray(ingredients)) {
+    ingredients = [ingredients];
+  }
   return Array.prototype.map.call(ingredients, (ingredient) => {
     const { amount, unit } = calculateAmount(ingredient, scaleFn);
     const convertedIngredient = {
@@ -50,7 +56,13 @@ const processIngredients = (ingredients = [], scaleFn) => {
       unit,
     };
     if (ingredient['DISPLAY_TIME']) {
-      convertedIngredient.time = ingredient['DISPLAY_TIME'];
+      const time = parseFloat(ingredient['DISPLAY_TIME']);
+      // Add the correct time unit based on the use case
+      let timeUnit = 'min'; // ingredient['USE'].toLowerCase() === 'boil'
+      if (['secondary', 'dry hop'].indexOf(ingredient['USE'].toLowerCase()) > -1) {
+        timeUnit = (parseFloat(amount) === 1) ? 'day' : 'days';
+      }
+      convertedIngredient.time = `${time} ${timeUnit}`;
     }
     return convertedIngredient;
   });
@@ -58,14 +70,13 @@ const processIngredients = (ingredients = [], scaleFn) => {
 
 /**
  * Convert a BeerXML file to the specified batch size
- * @param {String} fileName the name of the BeerXML file to parse
+ * @param {String} xmlIn the BeerXML file as a string
  * @param {Number} batchSize the size of the batch in gallons
  * @return {Object} the converted recipe
  */
-module.exports = (fileName, batchSizeIn) => {
+module.exports = (xmlIn, batchSizeIn) => {
   // Parse the XML file into JSON
-  const xml = fs.readFileSync(fileName, 'utf8');
-  const json = JSON.parse(parser.toJson(xml));
+  const json = JSON.parse(parser.toJson(xmlIn));
   log('JSON:');
   log(utils.prettyPrintJSON(json));
 
