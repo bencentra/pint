@@ -1,6 +1,6 @@
 {
   "name": "@bencentra/pint",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Convert BeerXML recipes to different batch sizes. Conveniently scale recipes up or down!",
   "main": "src/index.js",
   "scripts": {
@@ -12,8 +12,8 @@
   "author": "Ben Centra <blcentra@gmail.com>",
   "homepage": "https://github.com/bencentra/pint#pint",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/bencentra/pint.git"
+    "type": "git",
+    "url": "https://github.com/bencentra/pint.git"
   },
   "license": "MIT",
   "engines": {
