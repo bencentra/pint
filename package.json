@@ -10,6 +10,11 @@
     "pint": "src/cli.js"
   },
   "author": "Ben Centra <blcentra@gmail.com>",
+  "homepage": "https://github.com/bencentra/pint#pint",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/bencentra/pint.git"
+  },
   "license": "MIT",
   "engines": {
     "node": ">=10.0.0",
