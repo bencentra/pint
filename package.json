@@ -1,6 +1,6 @@
 {
   "name": "@bencentra/pint",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Convert BeerXML recipes to different batch sizes. Conveniently scale recipes up or down!",
   "main": "src/index.js",
   "scripts": {
