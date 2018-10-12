@@ -1,13 +1,13 @@
 {
-  "name": "pint",
+  "name": "@bencentra/pint",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Convert BeerXML recipes to different batch sizes. Conveniently scale recipes up or down!",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "pint": "cli.js"
+    "pint": "src/cli.js"
   },
   "author": "Ben Centra <blcentra@gmail.com>",
   "license": "MIT",

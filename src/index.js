@@ -1,6 +1,4 @@
 const parser = require('xml2json');
-const fs = require('fs');
-const path = require('path');
 const debug = require('debug');
 const utils = require('./utils');
 
@@ -51,6 +49,10 @@ const processIngredients = (ingredients = [], scaleFn) => {
     };
     if (ingredient['DISPLAY_TIME']) {
       convertedIngredient.time = ingredient['DISPLAY_TIME'];
+      // Add time unit if not present (is it safe to assume minutes?)
+      if (convertedIngredient.time.indexOf('min') === -1) {
+        convertedIngredient.time = `${convertedIngredient.time} min`;
+      }
     }
     return convertedIngredient;
   });
@@ -58,14 +60,13 @@ const processIngredients = (ingredients = [], scaleFn) => {
 
 /**
  * Convert a BeerXML file to the specified batch size
- * @param {String} fileName the name of the BeerXML file to parse
+ * @param {String} xmlIn the BeerXML file as a string
  * @param {Number} batchSize the size of the batch in gallons
  * @return {Object} the converted recipe
  */
-module.exports = (fileName, batchSizeIn) => {
+module.exports = (xmlIn, batchSizeIn) => {
   // Parse the XML file into JSON
-  const xml = fs.readFileSync(fileName, 'utf8');
-  const json = JSON.parse(parser.toJson(xml));
+  const json = JSON.parse(parser.toJson(xmlIn));
   log('JSON:');
   log(utils.prettyPrintJSON(json));
 

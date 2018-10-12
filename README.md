@@ -2,7 +2,7 @@
 
 Convert [BeerXML](http://www.beerxml.com/) recipes to different batch sizes. Conveniently scale recipes up or down!
 
-I download BeerXML files from recipes on [Brewtoad](https://www.brewtoad.com/).
+I download BeerXML files from [Brewtoad](https://www.brewtoad.com/) recipes.
 
 ## Usage
 

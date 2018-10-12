@@ -1,7 +1,8 @@
 #! /usr/bin/env node
 const program = require('commander');
+const fs = require('fs');
 const debug = require('debug');
-const pkg = require('./package.json');
+const pkg = require('../package.json');
 const pint = require('./index.js');
 const utils = require('./utils');
 
@@ -26,13 +27,14 @@ if (!file) {
 
 // Determine running parameters
 const batchSize = program.size;
-const format = (program.json) ? 'json' : 'text';
+const format = (program.json) ? 'json' : 'tables';
 
 // Convert the recipe
-const convertedRecipe = pint(file, batchSize);
+const xml = fs.readFileSync(file, 'utf8');
+const convertedRecipe = pint(xml, batchSize);
 
 // Output the recipe as text
-const outputText = (recipe) => {
+const outputTables = (recipe) => {
   const { data, ingredients } = recipe;
   // Print a fancy header
   const len = data.name.length;
@@ -53,8 +55,8 @@ const outputText = (recipe) => {
 const outputJson = (recipe) => console.log(utils.prettyPrintJSON(recipe));
 
 // Output the data
-if (format === 'text') {
-  outputText(convertedRecipe);
+if (format === 'tables') {
+  outputTables(convertedRecipe);
 } else if (format === 'json') {
   outputJson(convertedRecipe);
 }
